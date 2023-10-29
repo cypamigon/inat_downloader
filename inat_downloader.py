@@ -80,12 +80,20 @@ def download(my_species_name, observations, image_size) :
             observation_license = "none"
         observer_login = observation["user"]["login"]
         observation_quality = observation["quality_grade"]
+        if not observation_quality :
+            observation_quality = "none"
         observation_date = observation["observed_on"]
-        observation_latitude = observation["geojson"]["coordinates"][1]
-        if not observation_latitude :
+        if not observation_date :
+            observation_date = "none"
+        if observation["geojson"] :
+            observation_latitude = observation["geojson"]["coordinates"][1]
+            if not observation_latitude :
+                observation_latitude = "none"
+            observation_longitude = observation["geojson"]["coordinates"][0]
+            if not observation_longitude :
+                observation_longitude = "none"
+        else : 
             observation_latitude = "none"
-        observation_longitude = observation["geojson"]["coordinates"][0]
-        if not observation_longitude :
             observation_longitude = "none"
 
         current_observations_number = current_observations_number + 1
