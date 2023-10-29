@@ -163,12 +163,18 @@ def main():
 
     # Read CSV file with species names and start ids
     my_species = []
-    with open("species.csv", "r") as species_file:
-        species_reader = csv.DictReader(species_file, delimiter = ",")
-        for row in species_reader:
-            if row["name"] not in [species["name"] for species in my_species] : # Avoid species duplication
-                my_species.append(row)
-
+    if os.path.exists("species.csv"):
+        with open("species.csv", "r") as species_file:
+            species_reader = csv.DictReader(species_file, delimiter = ",")
+            for row in species_reader:
+                if row["name"] not in [species["name"] for species in my_species] : # Avoid species duplication
+                    my_species.append(row)
+    else :
+        print("ERROR : species.csv file not found")
+        print()
+        print("------------------- SCRIPT TERMINATED WITH ERROR -------------------")
+        print()
+        return
     # Create a results folder 
     os.makedirs("results", exist_ok=True)
 
@@ -177,18 +183,22 @@ def main():
         images_folder = "results/" + species["name"].replace(" ", "_") + "_images"
         os.makedirs(images_folder, exist_ok = True)
         metadata_file = "results/" + species["name"].replace(" ", "_") + "_metadata" + ".csv"
-        with open(metadata_file, 'w', newline = '') as csvfile:
-            csv_writer = csv.writer(csvfile)
-            csv_writer.writerow([
-            'species_name',
-            'observation_id',
-            'observation_license',
-            'observer_login',
-            'observation_quality',
-            'observation_date',
-            'observation_latidude',
-            'observation_longitude'
+
+        if not os.path.exists(metadata_file):
+            with open(metadata_file, 'w', newline = '') as csvfile:
+                csv_writer = csv.writer(csvfile)
+                csv_writer.writerow([
+                'species_name',
+                'observation_id',
+                'observation_license',
+                'observer_login',
+                'observation_quality',
+                'observation_date',
+                'observation_latidude',
+                'observation_longitude'
         ])
+        else : 
+            print(f"WARNING : {metadata_file} already exists, data will be appended to the existing file")
 
     # Run through all species 
     for species in my_species:
