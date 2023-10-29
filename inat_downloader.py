@@ -40,6 +40,8 @@ def evaluate_query_rate():
         my_daily_queries["value"] = 0
         my_daily_queries["reset_time"] = datetime.datetime.now() + datetime.timedelta(hours = 24)
     
+# Function to comply with iNaturalist media download rate limits
+def evaluate_media_rate(): 
     # Evaluate size of media downloaded this hour and wait if necessary
     if my_hourly_media["value"] > MAX_MEDIA_PER_HOUR:
         while my_hourly_media["reset_time"] > datetime.datetime.now() :
@@ -124,13 +126,10 @@ def download(my_species_name, observations, image_size) :
                     print(f"INFO : {current_images_number} images downloaded ({round(current_dataset_size, 2)} MB)")
 
                     # Update user query information
-                    my_daily_queries["value"] = my_daily_queries["value"] + 1
                     my_hourly_media["value"] = my_hourly_media["value"] + len(image_response.content)/1000000000 
                     my_daily_media["value"] = my_daily_media["value"] + len(image_response.content)/1000000000
-                    evaluate_query_rate()
+                    evaluate_media_rate()
 
-                    # Delay to avoid overloading the server
-                    time.sleep(1.2) 
             else : 
                 print(f"WARNING : Couldn't download image at {image_url}")
     return observation_id
@@ -202,6 +201,9 @@ def main():
                                     f"&photo_license={args.license}"
                                     f"&page=1&per_page=1"
                                     f"&order_by=id&order=asc&id_above={id_above}") 
+            
+            my_daily_queries["value"] = my_daily_queries["value"] + 1
+
             if response.json()["total_results"] < args.observations :
                 print(f"WARNING : Only {response.json()['total_results']} observations available for {species['name']}")
                 print(f"INFO : Starting downloading of {response.json()['total_results']} observations for {species['name']}")
@@ -220,6 +222,10 @@ def main():
                                         f"&photo_license={args.license}"
                                         f"&page=1&per_page={min(200, max_observations_number - current_observations_number)}"
                                         f"&order_by=id&order=asc&id_above={id_above}") 
+                
+                time.sleep(1.2) # Delay to avoid overloading the server
+                my_daily_queries["value"] = my_daily_queries["value"] + 1
+                evaluate_query_rate()
 
                 # Download images and metadata of the observations
                 observations = response.json()["results"]
