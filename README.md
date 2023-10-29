@@ -82,7 +82,7 @@ Images are named as follow : `species_user_license_observation-id_photos-in-obse
 
 ## Note
 
-The script relies on the iNaturalist API to download images and metadata. The API limits the request to 60 requests per hour. A delay between each request has been added to the script to comply with this limit. Additionally, the API restricts the downloads to 5 GB per hour and 24 GB per day. If these limits are nearly reached, the script will pause temporarily before resuming the download.
+The script relies on the iNaturalist API to download images and metadata. The API limits the request to 60 requests per minute. A delay between each request has been added to the script to comply with this limit. Additionally, the API restricts the downloads to 5 GB per hour and 24 GB per day. If these limits are nearly reached, the script will pause temporarily before resuming the download.
 
 ## License 
 
