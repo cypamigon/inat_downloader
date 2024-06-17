@@ -1,6 +1,6 @@
 # inat_downloader
 
-inat_downloader is a Python script for downloading images and metadata from [iNaturalist.org](https://www.inaturalist.org/ "iNaturalist's Homepage") observations.  
+inat_downloader is a Python script for bulk downloading images and metadata from [iNaturalist.org](https://www.inaturalist.org/ "iNaturalist's Homepage") observations. Selected observations are based on a user-specified list of species. 
 
 ## Installation
 
